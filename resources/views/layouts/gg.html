@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="my_city_info">
+    <ul class="my_city_info_ul" id="my_city_info_ul">
+        <li class="my_city_info_ul_li">
+            <div class="my_city_info_address_icon">
+                <i class="fal fa-map-marker" aria-hidden="true"></i>
+                Адрес :
+            </div>
+            <div class="my_city_info_address">
+                <a href="#" target="_blank" class="">Проспект Райымбека,<br> 208а/1, 1 этаж, Алматы</a>
+
+            </div>
+        </li>
+        <li class="my_city_info_ul_li">
+            <div class="my_city_info_phone_icon">
+                <i class="fal fa-phone" aria-hidden="true"></i>
+                Телефон :</div>
+            <div class="my_city_info_phones">
+                <a href="#" class="my_city_info_phone">87073424299</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+    //console.log("CHECK");
+    console.log(cityInfo);
+
+    let city_info_block = $(".my_city_info");
+    let city_info_address = $(".my_city_info_address");
+    let city_info_phones = $(".my_city_info_phones");
+
+
+    let my_cities = $("#my-cities");
+    let modal_wrapper = $(".modal-wrapper");
+    let my_city = $("#my_city");
+    let footer_address = $('.footer_city_address');
+    let footer_phones = $('.footer_city_phones');
+    let flag = 0;
+    my_city.click(function (e){
+        e.preventDefault();
+        if (flag === 0){
+            city_info_block.css('display', 'flex');
+            flag = 1;
+        }else{
+            city_info_block.css('display', 'none');
+            flag = 0;
+        }
+    });
+    let my_select = $("#my_city_select");
+    my_select.find('option').remove();
+    my_select.append("<option value='0'>-></option>");
+    my_select.change(function (){
+        //console.log($(this).val());
+        let value = parseInt($(this).val());
+        let infoArr = cityInfo[value-1];
+        let info = JSON.stringify(cityInfo[value-1]);
+        localStorage.setItem('info', info);
+        localStorage.setItem('isChecked', "true");
+        modal_wrapper.css('display', 'none');
+        city_info_address.find('a').remove();
+        city_info_address.append('<a href="#" target="_blank" class="">'+infoArr.address+'</a>');
+        city_info_phones.find('a').remove();
+        footer_phones.find('a').remove();
+        console.log(infoArr);
+        for (let k=0; k<infoArr.phones.length; k++){
+            city_info_phones.append('<a href="#" class="my_city_info_phone">'+infoArr.phones[k].number+'</a>');
+            footer_phones.append('<a href="#" class="my_city_info_phone">'+infoArr.phones[k].number+'</a>');
+        }
+        console.log(infoArr);
+        my_city.text('');
+        my_city.append(infoArr.name);
+        // my_city.append('<a href="#" id="my_city" style="border-bottom: 1px dashed red;color:red;">'+infoArr.name+'<i class="fa fa-caret-down" aria-hidden="true"></i></a>');
+        footer_address.text(infoArr.address);
+    });
+    for(let i=0; i<cityInfo.length;i++){
+        my_cities.append("<li value='"+cityInfo[i].id+"'>"+cityInfo[i].name+"</li>");
+        my_select.append("<option value='"+cityInfo[i].id+"'>"+cityInfo[i].name+"</option>");
+    }
+    let isChecked = localStorage.getItem("isChecked");
+    console.log(isChecked);
+    if(isChecked === null){
+        //console.log("NULLED");
+        modal_wrapper.css('display', 'flex');
+        $('.my-modal_content ul li').click(function(e){
+            //console.log($(this).attr('value'));
+            let value = $(this).attr('value');
+            //console.log(cityInfo[parseInt(value)-1].name);
+            let infoArr = cityInfo[parseInt(value)-1];
+            let info = JSON.stringify(cityInfo[parseInt(value)-1]);
+            localStorage.setItem('info', info);
+            localStorage.setItem('isChecked', "true");
+            modal_wrapper.css('display', 'none');
+            city_info_address.find('a').remove();
+            city_info_address.append('<a href="#" target="_blank" class="">'+infoArr.address+'</a>');
+            city_info_phones.find('a').remove();
+            footer_phones.find('a').remove();
+            console.log(infoArr);
+            for (let k=0; k<infoArr.phones.length; k++){
+                city_info_phones.append('<a href="#" class="my_city_info_phone">'+infoArr.phones[k].number+'</a>');
+                footer_phones.append('<a href="#" class="my_city_info_phone">'+infoArr.phones[k].number+'</a>');
+            }
+            console.log(infoArr);
+            my_city.text('');
+            my_city.append(infoArr.name);
+            // my_city.append('<a href="#" id="my_city" style="border-bottom: 1px dashed red;color:red;">'+infoArr.name+'<i class="fa fa-caret-down" aria-hidden="true"></i></a>');
+            footer_address.text(infoArr.address);
+        });
+    }
+    else{
+        let info = JSON.parse(localStorage.getItem("info"));
+        city_info_address.find('a').remove();
+        city_info_address.append('<a href="#" target="_blank" class="">'+info.address+'</a>');
+        city_info_phones.find('a').remove();
+        footer_phones.find('a').remove();
+        console.log(info);
+        for (let k=0; k<info.phones.length; k++){
+            city_info_phones.append('<a href="#" class="my_city_info_phone">'+info.phones[k].number+'</a>');
+            footer_phones.append('<a href="#" class="my_city_info_phone">'+info.phones[k].number+'</a>');
+        }
+        console.log(info);
+        my_city.text('');
+        my_city.append(info.name);
+        footer_address.text(info.address);
+    }
+</script>
+</body>
+</html>
